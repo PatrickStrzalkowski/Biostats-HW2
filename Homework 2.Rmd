@@ -1,0 +1,116 @@
+---
+title: "Homewrok 2"
+author: "Patrick Strzalkowski"
+date: "20/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Scenario 1 - Oil Spill & Shrimp Catch
+#a) The null hypothesis is that the oil spill had no effect on the weight of shrimp catch between 2009 and 2010. The altenrate hypothesis is that the oil spill did have an effect on the weight of shrimp catch between 2009 and 2010
+#b)
+```{r}
+
+data21=read.csv("Data 2.1.csv")
+data21
+#data2009=c(91900,95200,61900,73600,114300,117000,129500,74200,112700,152100,90700,89400,127500,142200)
+#data2010=c(82900,86700,46900,41300,91600,100400,128400,55900,101700,139100,79300,76100,114100,139800)
+```
+```{r}
+hist(data21$X2009.catch..tonnes.,main="Shrimp Harvest Before Gulf Coast Oil Spill",xlab="Catch (tonnes)",ylab="Frequency")
+hist(data21$X2010.catch..tonnes.,main="Shrimp Harvest After Gulf Coast Oil Spill",xlab="Catch (tonnes)",ylab="Frequency")
+```
+#c) A paired twosample t-test can be used to determine if there is a difference between the two groups. A t test is used for comparing the means of EXACTLY two groups. We have a control group (2009) and an experiment group (2010)
+#d)
+```{r}
+#data2009=c(91900,95200,61900,73600,114300,117000,129500,74200,112700,152100,90700,89400,127500,142200)
+#data2010=c(82900,86700,46900,41300,91600,100400,128400,55900,101700,139100,79300,76100,114100,139800)
+pre=c(data21$X2009.catch..tonnes.)
+post=c(data21$X2010.catch..tonnes.)
+t.test(post,pre,paired=TRUE)
+```
+```{r}
+qt(0.95,13)
+
+```
+#e) The critical value is (+/-)1.770933 and the observed is -6.3808. 
+#f) Since -6.3808 is further from 0 than -1.770933, we can reject the null hypothesis and state that the oil spill did have an effect on the total mass of the shrimp caught between 2009 and 2010
+
+#Scenario 2 - Eutrophifcation in Lake Erie
+#a) The null hypthesis is that the concentration of phosphorus is not greater than 15 ug/L. The alternative hypothesis is that the concentration of phosphorus is greater than 15 ug/L
+#b)
+```{r}
+Pdata=read.csv("Data 2.2.csv")
+Pdata
+```
+```{r}
+hist(Pdata$Total.phosphorous...g.L.,main="Total Phosphorus Concetrations in Lake Erie",xlab="Concentration (ug/L)",ylab="Frequency")
+```
+#c) A one-sample t-test will be used to compare the observed data to the known limit (15 ug/L)
+#d)
+```{r}
+Phos=c(Pdata$Total.phosphorous...g.L.)
+t.test(Phos, mu=15)
+```
+```{r}
+qt(0.95,9)
+```
+#e) The critical t value is 1.833113 and the observed t value is 1.8462
+#f) Since 1.8462 further from 0 than 1.833113 we can reject the null hypothesis and state that the phosphorus levels in Lake Erie are greater than the maximum guideline. Also to note, that the output is for a two-tailed t-test and we are performing a one-tailed t-test, so we must divide the p-value by half, making it <0.05, supporting our rejection of the null hypothesis.
+
+#Scenario 3 - Salmon Growth Rate
+#a) The null hypothesis is that there is no difference between the growth rate of salmon when on the carnivorous or vegetarian diet
+#b)
+```{r}
+Sdata=read.csv("Data 2.3.csv")
+Sdata
+```
+#b)
+```{r}
+hist(Sdata$Carnivorous,main="Salmon Mass Change on Carnivorous Diet",xlab="% Daily Wight Change",ylab="Frequency")
+hist(Sdata$Vegetarian,main="Salmon Mass Change on Vegetarian Diet",xlab="% Daily Wight Change",ylab="Frequency")
+```
+
+#c) A two sample paired t-test is appropiate as we are comparing the means of two populations
+#d)
+```{r}
+Veg=c(Sdata$Vegetarian)
+Carn=c(Sdata$Carnivorous)
+t.test(Veg, Carn, paired=TRUE)
+```
+```{r}
+qt(0.95, 14)
+```
+#e) The critical t value is (+/-)1.76131 and the observed t value is -15.162
+#f) Since the observed t value is greater than the critical t value we can reject the null hypothesis and state that the salmons' change in weight when on the vegetarian diet is less than the salmons' change in weight when on the carnivorous diet
+
+#Scenario 4 - Biomagnification of PCBs
+#a) The null hypothesis is that PCB poisoning is equal trophic levels and the alternative hypothesis is that the PCB poisoning is unequal between trophic levels
+#b)
+```{r}
+PCBdata=read.csv("Data 2.4.csv")
+PCBdata
+```
+```{r}
+#I don't think histograms are helpful for this type of data
+hist(PCBdata$No.effect)
+hist(PCBdata$No.reproduction)
+hist(PCBdata$Death)
+```
+
+#c) A chi squared test is appropiate as it compares independence between categorical variables
+#d)
+```{r}
+trophlevel1=c(133,100,17)
+toppred=c(4,61,35)
+data=data.frame('TL1'=trophlevel1, 'TP'=toppred)
+chisq.test(data)
+```
+```{r}
+qchisq(0.95,2)
+```
+#e) The critical chi squared value is 5.991465 and the observed chi squared value is 89.253
+#f) Since the p value is less than 0.05 and the observed chi square value is greater than the critical chi squared value we can reject the null hypothesis and state that PCB poisoning is unequal between trophic levels
+
